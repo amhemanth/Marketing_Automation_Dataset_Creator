@@ -139,7 +139,7 @@ urls += result
 dataset = prepare_dataset(urls)
 
 # Specify the file path for the dataset JSON file
-file_path = "dataset.json"
+file_path = "../data/dataset.json"
 
 # Download the dataset in JSON format
 download_dataset(dataset, file_path)
