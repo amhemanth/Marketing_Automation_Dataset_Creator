@@ -1,0 +1,4 @@
+newspaper3k
+spacy
+scikit-learn
+spacy-language-detection
