@@ -1,3 +1,5 @@
+tqdm
+requests
 newspaper3k
 spacy
 scikit-learn
