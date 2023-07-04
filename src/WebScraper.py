@@ -120,8 +120,7 @@ website_urls = ["https://blogs.infosys.com/all-blogs",
                 "https://blogs.infosys.com/engineering-services/",
                 "https://blogs.infosys.com/sap/",
                 "https://blogs.infosys.com/application-modernization/",
-                "https://blogs.infosys.com/nextgen-devops/",
-                "https://www.infosys.com/newsroom/press-releases.html"
+                "https://blogs.infosys.com/nextgen-devops/"
             ]
 
 # Get the list of URLs from the website
