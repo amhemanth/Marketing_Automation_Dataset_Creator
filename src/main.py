@@ -103,6 +103,7 @@ Fore.BLUE, Fore.GREEN, Fore.YELLOW, Fore.RED, Style.RESET_ALL
 website_urls = ["https://blogs.infosys.com/all-blogs", 
                 "https://blogs.infosys.com/infosys-cobalt/",
                 "https://blogs.infosys.com/infosys-cobalt/cloud-analytics",
+                "https://blogs.infosys.com/emerging-technology-solutions/artificial-intelligence",
                 "https://blogs.infosys.com/infosys-cobalt/cloud-applications",
                 "https://blogs.infosys.com/infosys-cobalt/cloud-platforms",
                 "https://blogs.infosys.com/infosys-cobalt/cyber-security",

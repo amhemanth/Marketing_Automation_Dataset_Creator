@@ -63,16 +63,53 @@ def generate_payload(content, content_type):
     doc = nlp(content)
     # Get the language of the document 
     language = doc._.language
+    # Get the content length
+    content_length = len(tokens)
+    # Get the category (e.g., "technology", "business", etc.)
+    category = identify_category(content)
+
     # Create the payload dictionary
     payload = {
         "content": content,
         "type": content_type,
         "style": style,
         "language": language['language'],
-        "brand_voice": brand_voice
+        "brand_voice": brand_voice,
+        "content_length": content_length,
+        "category": category
     }
 
     return payload
+
+def identify_category(content):
+    # Define your categories and corresponding keywords
+    category_keywords = {
+        "technology": ["technology", "digital", "innovation", "AI", "cloud"],
+        "business": ["business", "enterprise", "strategy", "leadership", "finance"],
+        "healthcare": ["healthcare", "medical", "wellness", "patient", "pharmaceutical"],
+        "education": ["education", "learning", "student", "school", "university"],
+        "travel": ["travel", "adventure", "explore", "vacation", "destination"],
+        "food": ["food", "recipe", "cooking", "restaurant", "cuisine"],
+        "sports": ["sports", "fitness", "exercise", "athlete", "competition"],
+        "entertainment": ["entertainment", "movies", "music", "celebrities", "arts"],
+        "fashion": ["fashion", "style", "clothing", "trends", "design"],
+        "environment": ["environment", "sustainability", "climate", "eco-friendly", "green"]
+        # Add more categories and their respective keywords as needed
+    }
+
+    # Tokenize the content
+    tokens = word_tokenize(content)
+
+    # Initialize the category
+    category = "other"
+
+    # Iterate over the categories and check for keyword matches
+    for cat, keywords in category_keywords.items():
+        if any(keyword.lower() in tokens for keyword in keywords):
+            category = cat
+            break
+
+    return category
 
 def identify_style(content):
     # Vectorize the content
@@ -81,20 +118,40 @@ def identify_style(content):
     # Predict the style using the trained SVM model
     style = svm_model.predict(X)[0]
 
-    return style
+    # Map the style prediction to the new style types
+    style_types = {
+        "formal": ["professional", "technical", "precise"],
+        "informal": ["casual", "conversational", "engaging"],
+        "other": ["neutral", "balanced", "generic"]
+    }
+
+    # Determine the best matching style type based on keyword overlap
+    style_keywords = style_types.get(style, [])
+    tokenized_content = word_tokenize(content.lower())
+    style_scores = [sum(token in tokenized_content for token in keywords) for keywords in style_keywords]
+    best_style_index = max(range(len(style_keywords)), key=style_scores.__getitem__)
+    best_style = style_keywords[best_style_index]
+
+    return best_style
 
 def identify_brand_voice(tokens):
     # Define your brand voice rules or keywords
-    # Example: Formal brand voice
-    formal_keywords = ["professional", "industry-standard", "enterprise"]
+    brand_voice_keywords = {
+        "formal": ["professional", "industry-standard", "authoritative", "polished", "official"],
+        "conversational": ["friendly", "approachable", "relatable", "casual", "engaging"],
+        "neutral": ["informative", "unbiased", "balanced", "objective", "impartial"]
+    }
 
-    # Count the occurrences of formal keywords in the tokens
-    formal_keyword_count = sum(token.lower() in formal_keywords for token in tokens)
+    # Calculate the relevance scores for each brand voice type based on keyword matches
+    brand_voice_scores = {
+        brand_voice: sum(token.lower() in keywords for token in tokens)
+        for brand_voice, keywords in brand_voice_keywords.items()
+    }
 
-    # Identify the brand voice based on the keyword count
-    brand_voice = "formal" if formal_keyword_count >= 2 else "casual"
+    # Determine the best matching brand voice type based on the highest relevance score
+    best_brand_voice = max(brand_voice_scores, key=brand_voice_scores.get)
 
-    return brand_voice
+    return best_brand_voice
 
 def GetDataSet(url):
     # blog content
@@ -103,7 +160,7 @@ def GetDataSet(url):
     if "blog" in url:
         content_type = "blog"
     elif "newsroom" in url:
-        content_type = " "
+        content_type = "pressRelease"
     
     return generate_payload(str(blog_content), content_type)
 
